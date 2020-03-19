@@ -1,4 +1,5 @@
 #include "ConnectingState.hpp"
+#include "ConnectedState.hpp"
 
 namespace ue
 {
@@ -10,6 +11,11 @@ ConnectingState::ConnectingState(Context &context, common::BtsId btsId)
     using namespace std::chrono_literals;
     context.bts.sendAttachRequest(btsId);
     context.timer.startTimer(500ms);
+}
+
+void ConnectingState::handleAttachAccept()
+{
+    context.setState<ConnectedState>();
 }
 
 }
