@@ -27,4 +27,10 @@ void ue::ConnectingState::handleAttachReject()
     context.setState<NotConnectedState>();
 }
 
+void ue::ConnectingState::handleTimeout()
+{
+    context.logger.logError("attach timeout");
+    context.setState<NotConnectedState>();
+}
+
 }
