@@ -47,6 +47,13 @@ TEST_F(BtsPortTestSuite, shallRegisterHandlersBetweenStartStop)
 {
 }
 
+TEST_F(BtsPortTestSuite, shallHandleDisconnected)
+{
+    EXPECT_CALL(handlerMock, handleDisconnected());
+    disconnectedCallback();
+}
+
+
 TEST_F(BtsPortTestSuite, shallIgnoreWrongMessage)
 {
     common::OutgoingMessage wrongMsg{};

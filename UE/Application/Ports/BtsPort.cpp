@@ -64,9 +64,9 @@ void BtsPort::handleMessage(BinaryMessage msg)
 
 void BtsPort::handleDisconnected()
 {
-
+    logger.logError("disconnected");
+    handler->handleDisconnected();
 }
-
 
 void BtsPort::sendAttachRequest(common::BtsId btsId)
 {
