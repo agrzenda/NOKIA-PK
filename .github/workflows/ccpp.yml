@@ -1,37 +1,39 @@
 name: C/C++ CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1
+      with:
+        path: ../Qt
+        key: QtCache
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
+      with:
+        mirror: 'http://mirrors.ocf.berkeley.edu/qt/'
+        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+
+    - name: gcc version
+      run: gcc --version
+
     - name: cmake
       run: cmake .
-    - name: make all targets
-      run: make all
 
-    - name: UT for BtsApplication
-      run: make BtsApplicationUT 
+    - name: make
+      run: make
 
-    - name: run BTS ut
+    - name: UE tests
+      run: ./UE/Tests/Application/UeApplicationUT
+    - name: BTS tests
       run: ./BTS/Tests/Application/BtsApplicationUT
-
-    - name: UT for COMMON
-      run: make COMMON_UT
-
-    - name: UT for UeApplication
-      run: make UeApplicationUT
-
-    - name: next steps
-      run: echo "karamba"
-
+    - name: Common tests
+      run: ./COMMON/Tests/COMMON_UT
