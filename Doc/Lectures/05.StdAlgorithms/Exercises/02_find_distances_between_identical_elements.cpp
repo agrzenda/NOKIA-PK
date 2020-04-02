@@ -12,11 +12,11 @@ auto find_all_distances_between_indentical_elements(const T& a)
     std::vector<size_t> result;
     for (auto i = begin(a), e = end(a); i != e; ++i)
     {
-        for (auto j = i + 1; j != e; ++j)
+        for (auto j = std::next(i); j != e; ++j)
         {
             if (*i == *j)
             {
-                result.push_back(j - i);
+                result.push_back(std::distance(i, j));
             }
         }
     }
@@ -36,7 +36,7 @@ void print_all(T const& a)
 int main() {
     std::vector<int> a{1, 33, 11, 22, 22, 33, 444, 1243, 12, 22};
     // MAKE IT WORK FOR forward_list too
-    // std::forward_list<int> a{1, 33, 11, 22, 22, 33, 444, 1243, 12, 22};
+    //std::forward_list<int> a{1, 33, 11, 22, 22, 33, 444, 1243, 12, 22};
     auto d = find_all_distances_between_indentical_elements(a);
     print_all(d);
 }

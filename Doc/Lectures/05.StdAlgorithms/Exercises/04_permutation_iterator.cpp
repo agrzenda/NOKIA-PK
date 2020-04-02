@@ -18,10 +18,10 @@ public:
     using reference = value_type const&;
     using pointer = value_type const*;
 
-    // EXERCICE: make it biderectional_iterator
-    // QUESTION1: can we make it random_access_iterator?
-    // QUESTION2: can we make it random_access_iterator?
-    using iterator_category = std::forward_iterator_tag;
+    // EXERCICE: make it bidirectional_iterator
+    // QUESTION1: can we make it random_access_iterator? YES
+    // QUESTION2: should we make it random_access_iterator? NO - performance reasons
+    using iterator_category = std::bidirectional_iterator_tag;
 
 
     template <typename InitialRange>
@@ -48,6 +48,7 @@ public:
         return !(*this == other);
     }
 
+    // ++it
     permutation_iterator& operator ++()
     {
         using std::begin;
@@ -56,10 +57,28 @@ public:
         return *this;
     }
 
+    // it++
     permutation_iterator operator ++(int)
     {
         auto tmp = *this;
-        ++tmp;
+        ++*this;
+        return tmp;
+    }
+
+    // ++it
+    permutation_iterator& operator --()
+    {
+        using std::begin;
+        using std::end;
+        first_again = not std::prev_permutation(begin(content), end(content));
+        return *this;
+    }
+
+    // it--
+    permutation_iterator operator --(int)
+    {
+        auto tmp = *this;
+        --*this;
         return tmp;
     }
 
@@ -93,13 +112,25 @@ auto permutation_range(size_t N)
 
 
 int main() {
-    for (auto [it, end_it] = permutation_range(4); it != end_it; ++it)
+    auto [beg_it, end_it] = permutation_range(4);
+    for (auto it = beg_it; it != end_it; ++it)
     {
         std::copy(it->begin(), it->end(), std::ostream_iterator<int>(std::cout, ","));
-        std::cout << "}\n";
+        std::cout << "\n";
     }
-    // cannot be compiled (with D_GLIBCXX_CONCEPT_CHECKS on gcc)
-    // auto it = std::prev(permutation_range(4).first);
+
+     std::cout << "A teraz od konca\n";
+
+    if (beg_it != end_it)
+    {
+        auto it = end_it;
+        do
+        {
+            --it;
+            std::copy(it->begin(), it->end(), std::ostream_iterator<int>(std::cout, ","));
+            std::cout << "\n";
+        } while(it != beg_it);
+    }
 }
 
 

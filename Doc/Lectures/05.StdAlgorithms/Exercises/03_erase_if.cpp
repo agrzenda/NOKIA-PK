@@ -23,13 +23,23 @@ auto erase_if(Container& container, Predicate&& predicate)
 template <class ...T, typename Predicate>
 auto erase_if(std::forward_list<T...>& container, Predicate&& predicate)
 {
-    // IMPLEMENT
+    container.remove_if(std::forward<Predicate>(predicate));
 }
 
 template <class ...T, typename Predicate>
 auto erase_if(std::map<T...>& container, Predicate predicate)
 {
-    // IMPLEMENT
+    for (auto it = container.begin(); it != container.end();)
+    {
+        if (predicate(*it))
+        {
+            it = container.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
 }
 
 }
@@ -40,6 +50,7 @@ int main() {
     my_std::erase_if(a, [](auto elem) { return elem % 2 == 0; });
     assert((a == std::vector{1, 33, 11, 33, 1243}));
 
+    // n1(e1)->n2(e2)->(*)
     std::forward_list<int> b{1, 33, 11, 22, 22, 33, 444, 1243, 12, 22};
     my_std::erase_if(b, [](auto elem) { return elem % 2 == 0; });
     assert((b == std::forward_list{1, 33, 11, 33, 1243}));

@@ -2,23 +2,27 @@
 #include <iostream>
 #include <iterator>
 #include <vector>
+#include <numeric>
 
 // FIX (it prints duplicates) - maybe rewrite with algorithms?
 template <typename T, typename U>
 auto get_stable_intersection_indices(const T& a1, const U& a2)
 {
+
     using std::size;
-    std::vector<size_t> result;
-    for (size_t i = 0u; i < size(a1); ++i)
-    {
-        for (size_t j = 0u; j < size(a2); ++j)
-        {
-            if (a1[i] == a2[j])
-            {
-                result.push_back(i);
-            }
-        }
-    }
+    using std::begin;
+    using std::end;
+
+    std::vector<size_t> result(size(a1));
+    std::iota(begin(result), end(result), 0u); // {0, 1, 2, 3, ...}
+
+    auto l_toRemove = [&] (size_t i) {
+        auto l_findA1Elem = [e1 = a1[i]] (auto e2) { return e1 == e2; };
+        return ! std::any_of(begin(a2), end(a2),  l_findA1Elem);
+    };
+    result.erase(std::remove_if(begin(result), end(result), l_toRemove),
+                 end(result));
+
     return result;
 }
 
